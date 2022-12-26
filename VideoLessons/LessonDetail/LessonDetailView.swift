@@ -12,6 +12,7 @@ class LessonDetailUIView: UIView {
     
     var onPlay: (() -> Void)?
     var onNext: (() -> Void)?
+    var onPrevious: (() -> Void)?
     
     let thumbnail: UIImageView = {
         let view = UIImageView()
@@ -56,6 +57,18 @@ class LessonDetailUIView: UIView {
         return view
     }()
     
+    let previousLessonButton: UIButton = {
+        let button = UIButton(type: .system)
+        button.setTitle("Previous lesson", for: .normal)
+        return button
+    }()
+    
+    let previousButtonChevron: UIButton = {
+        let view = UIButton(type: .system)
+        view.setImage(UIImage(systemName: "chevron.left"), for: .normal)
+        return view
+    }()
+    
     override init(frame: CGRect) {
         super.init(frame: frame)
         setupView()
@@ -83,8 +96,15 @@ class LessonDetailUIView: UIView {
         nextLessonButton.addSubview(nextButtonChevron)
         nextButtonChevron.anchor(top: nil, leading: nil, bottom: nil, trailing: trailingAnchor, padding: .init(top: 20, left: 0, bottom: 0, right: 20))
         
-        nextLessonButton.anchor(top: body.bottomAnchor, leading: nil, bottom: nil, trailing: nextButtonChevron.leadingAnchor, padding: .init(top: 20, left: 0, bottom: 0, right: 5))
+        nextLessonButton.anchor(top: nil, leading: nil, bottom: safeAreaLayoutGuide.bottomAnchor, trailing: nextButtonChevron.leadingAnchor, padding: .init(top: 0, left: 0, bottom: 20, right: 5))
         nextButtonChevron.centerYInSuperview()
+        
+        addSubview(previousLessonButton)
+        previousLessonButton.addSubview(previousButtonChevron)
+        previousButtonChevron.anchor(top: nil, leading: leadingAnchor, bottom: nil, trailing: nil, padding: .init(top: 0, left: 20, bottom: 0, right: 0))
+        
+        previousLessonButton.anchor(top: nil, leading: previousButtonChevron.trailingAnchor, bottom: safeAreaLayoutGuide.bottomAnchor, trailing: nil, padding: .init(top: 0, left: 5, bottom: 20, right: 0))
+        previousButtonChevron.centerYInSuperview()
     }
     
     func configureView(lesson: VideoLessonsList?) {
@@ -97,6 +117,7 @@ class LessonDetailUIView: UIView {
     private func observeEvents() {
         playButton.addTarget(self, action: #selector(handlePlay), for: .touchUpInside)
         nextLessonButton.addTarget(self, action: #selector(handleNext), for: .touchUpInside)
+        previousLessonButton.addTarget(self, action: #selector(handlePrevious), for: .touchUpInside)
     }
     
     @objc func handlePlay() {
@@ -105,6 +126,10 @@ class LessonDetailUIView: UIView {
     
     @objc func handleNext() {
         onNext?()
+    }
+    
+    @objc func handlePrevious() {
+        onPrevious?()
     }
     
     required init?(coder: NSCoder) {

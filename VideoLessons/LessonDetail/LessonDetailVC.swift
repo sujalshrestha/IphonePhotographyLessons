@@ -69,6 +69,10 @@ class LessonDetailVC: UIViewController {
         currentView.onNext = { [weak self] in
             self?.gotoNextLesson()
         }
+        
+        currentView.onPrevious = { [weak self] in
+            self?.gotoPreviousLesson()
+        }
     }
     
     private func openVideoPlayer() {
@@ -89,6 +93,20 @@ class LessonDetailVC: UIViewController {
                 var nextIndex = index + 1
                 if nextIndex >= lessonsList.count { nextIndex = 0 }
                 lesson.send(lessonsList[nextIndex])
+                return
+            }
+        }
+    }
+    
+    private func gotoPreviousLesson() {
+        let persistenceManager = PersistenceManager.shared
+        let lessonsList = persistenceManager.fetch(VideoLessonsList.self)
+        
+        for (index, lessonData) in lessonsList.enumerated() {
+            if (lesson.value?.id ?? 0) == lessonData.id {
+                var previousIndex = index - 1
+                if previousIndex <= 0 { previousIndex = 0 }
+                lesson.send(lessonsList[previousIndex])
                 return
             }
         }
