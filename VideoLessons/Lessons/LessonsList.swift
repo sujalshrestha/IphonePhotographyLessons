@@ -6,6 +6,7 @@
 //
 
 import SwiftUI
+import Kingfisher
 
 struct LessonsListView: View {
     
@@ -42,15 +43,14 @@ struct LessonListCell: View {
     
     var body: some View {
         HStack(spacing: 10) {
-            AsyncImage(url: URL(string: lesson.thumbnail)) { image in
-                image
-                    .resizable()
-                    .aspectRatio(contentMode: .fill)
-                    .cornerRadius(4)
-            } placeholder: {
-                Color.gray
-            }
-            .frame(width: 120, height: 60)
+            KFImage(URL(string: lesson.thumbnail))
+                .placeholder {
+                    Color.gray
+                }
+                .resizable()
+                .aspectRatio(contentMode: .fill)
+                .frame(width: 120, height: 60)
+                .cornerRadius(4)
             
             Text(lesson.name)
         }
