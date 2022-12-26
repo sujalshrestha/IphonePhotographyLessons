@@ -58,6 +58,24 @@ class LessonDetailVC: UIViewController {
     }
     
     @objc func downloadVideo() {
+        let videoUrl = lesson.value?.videoUrl ?? ""
+        let fileName = String(lesson.value?.id ?? 0)
+        let downloadManager = DownloadManager()
+        downloadManager.checkFileExists(fileName: fileName)
+        
+        downloadManager.isDownloaded.sink { isDownloaded in
+            if isDownloaded {
+                print("Video has been downloaded")
+            } else {
+                downloadManager.downloadFile(fileName: fileName, videoUrl: videoUrl)
+            }
+        }.store(in: &cancellables)
+        
+        downloadManager.isDownloading.sink { isDownloading in
+            if isDownloading {
+                print("Video is downloading...")
+            }
+        }.store(in: &cancellables)
         
     }
     
@@ -76,12 +94,23 @@ class LessonDetailVC: UIViewController {
     }
     
     private func openVideoPlayer() {
-        if let videoUrl = URL(string: lesson.value?.videoUrl ?? "") {
-            let player = AVPlayer(url: videoUrl)
-            let avPlayerVC = AVPlayerViewController()
-            avPlayerVC.player = player
-            present(avPlayerVC, animated: true) { avPlayerVC.player?.play() }
-        }
+        let downloadManager = DownloadManager()
+        let fileName = String(lesson.value?.id ?? 0)
+        downloadManager.checkFileExists(fileName: fileName)
+        let fileAsset = downloadManager.getVideoFileAsset(fileName: fileName)
+        
+        let player = AVPlayer(playerItem: fileAsset)
+        let avPlayerVC = AVPlayerViewController()
+        avPlayerVC.player = player
+        present(avPlayerVC, animated: true) { avPlayerVC.player?.play() }
+        
+        
+//        if let videoUrl = URL(string: lesson.value?.videoUrl ?? "") {
+//            let player = AVPlayer(url: videoUrl)
+//            let avPlayerVC = AVPlayerViewController()
+//            avPlayerVC.player = player
+//            present(avPlayerVC, animated: true) { avPlayerVC.player?.play() }
+//        }
     }
     
     private func gotoNextLesson() {
