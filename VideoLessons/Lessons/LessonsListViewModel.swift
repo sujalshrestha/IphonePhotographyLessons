@@ -41,6 +41,7 @@ final class LessonsListViewModel: ObservableObject {
     
     private func saveToLocalDatabase(lessons: [Lessons]) {
         let persistenceManager = PersistenceManager.shared
+        persistenceManager.deleteAllRecords("VideoLessonsList")
         
         for lesson in lessons {
             let lessonList = VideoLessonsList(context: persistenceManager.context)
