@@ -16,7 +16,7 @@ struct LessonsListView: View {
             ZStack {
                 if viewModel.isLoading { ProgressView() }
                 List(viewModel.lessons, id: \.id) { lesson in
-                    NavigationLink(destination: Text(lesson.name)) {
+                    NavigationLink(destination: LessonDetailView(lesson: lesson)) {
                         LessonListCell(lesson: lesson)
                     }
                 }
