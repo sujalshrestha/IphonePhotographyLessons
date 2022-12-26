@@ -11,6 +11,7 @@ import Kingfisher
 class LessonDetailUIView: UIView {
     
     var onPlay: (() -> Void)?
+    var onNext: (() -> Void)?
     
     let thumbnail: UIImageView = {
         let view = UIImageView()
@@ -86,7 +87,8 @@ class LessonDetailUIView: UIView {
         nextButtonChevron.centerYInSuperview()
     }
     
-    func configureView(lesson: VideoLessonsList) {
+    func configureView(lesson: VideoLessonsList?) {
+        guard let lesson = lesson else { return }
         thumbnail.kf.setImage(with: URL(string: lesson.thumbnail))
         title.text = lesson.name
         body.text = lesson.details
@@ -94,10 +96,15 @@ class LessonDetailUIView: UIView {
     
     private func observeEvents() {
         playButton.addTarget(self, action: #selector(handlePlay), for: .touchUpInside)
+        nextLessonButton.addTarget(self, action: #selector(handleNext), for: .touchUpInside)
     }
     
     @objc func handlePlay() {
         onPlay?()
+    }
+    
+    @objc func handleNext() {
+        onNext?()
     }
     
     required init?(coder: NSCoder) {

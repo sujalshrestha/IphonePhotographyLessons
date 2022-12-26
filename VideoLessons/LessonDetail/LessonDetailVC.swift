@@ -8,6 +8,7 @@
 import UIKit
 import SwiftUI
 import AVKit
+import Combine
 
 struct LessonDetailView: UIViewControllerRepresentable {
     typealias UIViewControllerType = LessonDetailVC
@@ -25,16 +26,17 @@ struct LessonDetailView: UIViewControllerRepresentable {
 class LessonDetailVC: UIViewController {
     
     let currentView = LessonDetailUIView()
-    let lesson: VideoLessonsList
+    var cancellables = [AnyCancellable]()
+    let lesson = CurrentValueSubject<VideoLessonsList?, Never>(nil)
     
     init(lesson: VideoLessonsList) {
-        self.lesson = lesson
+        self.lesson.send(lesson)
         super.init(nibName: nil, bundle: nil)
     }
     
     override func viewDidLoad() {
         super.viewDidLoad()
-        currentView.configureView(lesson: lesson)
+        observeEvents()
         observeViewEvents()
     }
     
@@ -49,6 +51,12 @@ class LessonDetailVC: UIViewController {
         }
     }
     
+    private func observeEvents() {
+        lesson.sink { [weak self] lesson in
+            self?.currentView.configureView(lesson: lesson)
+        }.store(in: &cancellables)
+    }
+    
     @objc func downloadVideo() {
         
     }
@@ -57,14 +65,32 @@ class LessonDetailVC: UIViewController {
         currentView.onPlay = { [weak self] in
             self?.openVideoPlayer()
         }
+        
+        currentView.onNext = { [weak self] in
+            self?.gotoNextLesson()
+        }
     }
     
     private func openVideoPlayer() {
-        if let videoUrl = URL(string: lesson.videoUrl) {
+        if let videoUrl = URL(string: lesson.value?.videoUrl ?? "") {
             let player = AVPlayer(url: videoUrl)
             let avPlayerVC = AVPlayerViewController()
             avPlayerVC.player = player
             present(avPlayerVC, animated: true) { avPlayerVC.player?.play() }
+        }
+    }
+    
+    private func gotoNextLesson() {
+        let persistenceManager = PersistenceManager.shared
+        let lessonsList = persistenceManager.fetch(VideoLessonsList.self)
+        
+        for (index, lessonData) in lessonsList.enumerated() {
+            if (lesson.value?.id ?? 0) == lessonData.id {
+                var nextIndex = index + 1
+                if nextIndex >= lessonsList.count { nextIndex = 0 }
+                lesson.send(lessonsList[nextIndex])
+                return
+            }
         }
     }
     
