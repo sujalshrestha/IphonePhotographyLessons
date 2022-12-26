@@ -8,7 +8,6 @@
 import UIKit
 import SwiftUI
 import Combine
-import AVFoundation
 import AVKit
 
 struct LessonDetailView: UIViewControllerRepresentable {
