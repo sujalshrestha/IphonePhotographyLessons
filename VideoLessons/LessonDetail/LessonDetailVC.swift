@@ -7,12 +7,11 @@
 
 import UIKit
 import SwiftUI
-import Combine
 import AVKit
 
 struct LessonDetailView: UIViewControllerRepresentable {
     typealias UIViewControllerType = LessonDetailVC
-    let lesson: Lessons
+    let lesson: VideoLessonsList
     
     func makeUIViewController(context: Context) -> LessonDetailVC {
         let vc = LessonDetailVC(lesson: lesson)
@@ -26,9 +25,9 @@ struct LessonDetailView: UIViewControllerRepresentable {
 class LessonDetailVC: UIViewController {
     
     let currentView = LessonDetailUIView()
-    let lesson: Lessons
+    let lesson: VideoLessonsList
     
-    init(lesson: Lessons) {
+    init(lesson: VideoLessonsList) {
         self.lesson = lesson
         super.init(nibName: nil, bundle: nil)
     }
@@ -61,7 +60,7 @@ class LessonDetailVC: UIViewController {
     }
     
     private func openVideoPlayer() {
-        if let videoUrl = URL(string: lesson.video_url) {
+        if let videoUrl = URL(string: lesson.videoUrl) {
             let player = AVPlayer(url: videoUrl)
             let avPlayerVC = AVPlayerViewController()
             avPlayerVC.player = player

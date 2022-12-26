@@ -7,10 +7,14 @@
 	objects = {
 
 /* Begin PBXBuildFile section */
+		E05C49DC2959A625000EB526 /* VideoLessonsList+CoreDataClass.swift in Sources */ = {isa = PBXBuildFile; fileRef = E05C49DA2959A625000EB526 /* VideoLessonsList+CoreDataClass.swift */; };
+		E05C49DD2959A625000EB526 /* VideoLessonsList+CoreDataProperties.swift in Sources */ = {isa = PBXBuildFile; fileRef = E05C49DB2959A625000EB526 /* VideoLessonsList+CoreDataProperties.swift */; };
+		E0BE2D372959A4AB00D719C9 /* VideoLessonsModel.xcdatamodeld in Sources */ = {isa = PBXBuildFile; fileRef = E0BE2D352959A4AB00D719C9 /* VideoLessonsModel.xcdatamodeld */; };
 		E0DDE8F02959619D009C18AE /* LessonDetailVC.swift in Sources */ = {isa = PBXBuildFile; fileRef = E0DDE8EF2959619D009C18AE /* LessonDetailVC.swift */; };
 		E0DDE8F2295961B0009C18AE /* LessonDetailView.swift in Sources */ = {isa = PBXBuildFile; fileRef = E0DDE8F1295961B0009C18AE /* LessonDetailView.swift */; };
 		E0DDE8F529596429009C18AE /* UIAnchor+Ext.swift in Sources */ = {isa = PBXBuildFile; fileRef = E0DDE8F429596429009C18AE /* UIAnchor+Ext.swift */; };
 		E0DDE8F8295966DC009C18AE /* Kingfisher in Frameworks */ = {isa = PBXBuildFile; productRef = E0DDE8F7295966DC009C18AE /* Kingfisher */; };
+		E0DDE8FB2959A005009C18AE /* PersistenceManager.swift in Sources */ = {isa = PBXBuildFile; fileRef = E0DDE8FA2959A005009C18AE /* PersistenceManager.swift */; };
 		E0E0ED6A295801D000D15C4D /* VideoLessonsApp.swift in Sources */ = {isa = PBXBuildFile; fileRef = E0E0ED69295801D000D15C4D /* VideoLessonsApp.swift */; };
 		E0E0ED6E295801D200D15C4D /* Assets.xcassets in Resources */ = {isa = PBXBuildFile; fileRef = E0E0ED6D295801D200D15C4D /* Assets.xcassets */; };
 		E0E0ED71295801D200D15C4D /* Preview Assets.xcassets in Resources */ = {isa = PBXBuildFile; fileRef = E0E0ED70295801D200D15C4D /* Preview Assets.xcassets */; };
@@ -43,10 +47,14 @@
 /* End PBXContainerItemProxy section */
 
 /* Begin PBXFileReference section */
+		E05C49DA2959A625000EB526 /* VideoLessonsList+CoreDataClass.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; name = "VideoLessonsList+CoreDataClass.swift"; path = "VideoLessons/CoreData/VideoLessonsList+CoreDataClass.swift"; sourceTree = SOURCE_ROOT; };
+		E05C49DB2959A625000EB526 /* VideoLessonsList+CoreDataProperties.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; name = "VideoLessonsList+CoreDataProperties.swift"; path = "VideoLessons/CoreData/VideoLessonsList+CoreDataProperties.swift"; sourceTree = SOURCE_ROOT; };
+		E0BE2D362959A4AB00D719C9 /* VideoLessonsModel.xcdatamodel */ = {isa = PBXFileReference; lastKnownFileType = wrapper.xcdatamodel; path = VideoLessonsModel.xcdatamodel; sourceTree = "<group>"; };
 		E0DDE8ED29595C4D009C18AE /* Info.plist */ = {isa = PBXFileReference; lastKnownFileType = text.plist; path = Info.plist; sourceTree = "<group>"; };
 		E0DDE8EF2959619D009C18AE /* LessonDetailVC.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = LessonDetailVC.swift; sourceTree = "<group>"; };
 		E0DDE8F1295961B0009C18AE /* LessonDetailView.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = LessonDetailView.swift; sourceTree = "<group>"; };
 		E0DDE8F429596429009C18AE /* UIAnchor+Ext.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = "UIAnchor+Ext.swift"; sourceTree = "<group>"; };
+		E0DDE8FA2959A005009C18AE /* PersistenceManager.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = PersistenceManager.swift; sourceTree = "<group>"; };
 		E0E0ED66295801D000D15C4D /* VideoLessons.app */ = {isa = PBXFileReference; explicitFileType = wrapper.application; includeInIndex = 0; path = VideoLessons.app; sourceTree = BUILT_PRODUCTS_DIR; };
 		E0E0ED69295801D000D15C4D /* VideoLessonsApp.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = VideoLessonsApp.swift; sourceTree = "<group>"; };
 		E0E0ED6D295801D200D15C4D /* Assets.xcassets */ = {isa = PBXFileReference; lastKnownFileType = folder.assetcatalog; path = Assets.xcassets; sourceTree = "<group>"; };
@@ -107,6 +115,16 @@
 			path = Utils;
 			sourceTree = "<group>";
 		};
+		E0DDE8F929599FF9009C18AE /* CoreData */ = {
+			isa = PBXGroup;
+			children = (
+				E05C49DA2959A625000EB526 /* VideoLessonsList+CoreDataClass.swift */,
+				E05C49DB2959A625000EB526 /* VideoLessonsList+CoreDataProperties.swift */,
+				E0DDE8FA2959A005009C18AE /* PersistenceManager.swift */,
+			);
+			path = CoreData;
+			sourceTree = "<group>";
+		};
 		E0E0ED5D295801D000D15C4D = {
 			isa = PBXGroup;
 			children = (
@@ -130,6 +148,7 @@
 		E0E0ED68295801D000D15C4D /* VideoLessons */ = {
 			isa = PBXGroup;
 			children = (
+				E0DDE8F929599FF9009C18AE /* CoreData */,
 				E0DDE8F32959641D009C18AE /* Utils */,
 				E0E0ED932958030400D15C4D /* Lessons */,
 				E0DDE8EE29596192009C18AE /* LessonDetail */,
@@ -139,6 +158,7 @@
 				E0E0ED6D295801D200D15C4D /* Assets.xcassets */,
 				E0E0ED6F295801D200D15C4D /* Preview Content */,
 				E0E0ED9F29580F5A00D15C4D /* Alert.swift */,
+				E0BE2D352959A4AB00D719C9 /* VideoLessonsModel.xcdatamodeld */,
 			);
 			path = VideoLessons;
 			sourceTree = "<group>";
@@ -324,14 +344,18 @@
 			buildActionMask = 2147483647;
 			files = (
 				E0DDE8F2295961B0009C18AE /* LessonDetailView.swift in Sources */,
+				E0BE2D372959A4AB00D719C9 /* VideoLessonsModel.xcdatamodeld in Sources */,
 				E0E0ED992958068800D15C4D /* NetworkManager.swift in Sources */,
+				E05C49DC2959A625000EB526 /* VideoLessonsList+CoreDataClass.swift in Sources */,
 				E0E0ED972958033800D15C4D /* LessonsModel.swift in Sources */,
 				E0E0ED9E29580E3900D15C4D /* LessonsListViewModel.swift in Sources */,
 				E0E0ED6A295801D000D15C4D /* VideoLessonsApp.swift in Sources */,
 				E0E0ED952958031000D15C4D /* LessonsList.swift in Sources */,
 				E0E0ED9C2958078100D15C4D /* VLError.swift in Sources */,
+				E05C49DD2959A625000EB526 /* VideoLessonsList+CoreDataProperties.swift in Sources */,
 				E0E0EDA029580F5A00D15C4D /* Alert.swift in Sources */,
 				E0DDE8F529596429009C18AE /* UIAnchor+Ext.swift in Sources */,
+				E0DDE8FB2959A005009C18AE /* PersistenceManager.swift in Sources */,
 				E0DDE8F02959619D009C18AE /* LessonDetailVC.swift in Sources */,
 			);
 			runOnlyForDeploymentPostprocessing = 0;
@@ -678,6 +702,19 @@
 			productName = Kingfisher;
 		};
 /* End XCSwiftPackageProductDependency section */
+
+/* Begin XCVersionGroup section */
+		E0BE2D352959A4AB00D719C9 /* VideoLessonsModel.xcdatamodeld */ = {
+			isa = XCVersionGroup;
+			children = (
+				E0BE2D362959A4AB00D719C9 /* VideoLessonsModel.xcdatamodel */,
+			);
+			currentVersion = E0BE2D362959A4AB00D719C9 /* VideoLessonsModel.xcdatamodel */;
+			path = VideoLessonsModel.xcdatamodeld;
+			sourceTree = "<group>";
+			versionGroupType = wrapper.xcdatamodel;
+		};
+/* End XCVersionGroup section */
 	};
 	rootObject = E0E0ED5E295801D000D15C4D /* Project object */;
 }

@@ -9,7 +9,7 @@ import SwiftUI
 
 final class LessonsListViewModel: ObservableObject {
     @Published var isLoading = true
-    @Published var lessons: [Lessons] = []
+    @Published var lessons: [VideoLessonsList] = []
     @Published var alertItem: AlertItem?
     
     func getLessons() {
@@ -18,9 +18,12 @@ final class LessonsListViewModel: ObservableObject {
                 isLoading = false
                 switch result {
                 case .success(let lessons):
-                    self.lessons = lessons
+                    saveToLocalDatabase(lessons: lessons)
+                    getSavedDataFromLocalDatabase()
                     
                 case .failure(let error):
+                    getSavedDataFromLocalDatabase()
+                    if !lessons.isEmpty { return } // only show error popup if the saved data is empty
                     switch error {
                     case .invalidData:
                         alertItem = AlertContext.invalidData
@@ -31,9 +34,27 @@ final class LessonsListViewModel: ObservableObject {
                     case .unableToComplete:
                         alertItem = AlertContext.unableToComplete
                     }
-                    
                 }
             }
         }
+    }
+    
+    private func saveToLocalDatabase(lessons: [Lessons]) {
+        let persistenceManager = PersistenceManager.shared
+        
+        for lesson in lessons {
+            let lessonList = VideoLessonsList(context: persistenceManager.context)
+            lessonList.id = Int32(lesson.id)
+            lessonList.name = lesson.name
+            lessonList.details = lesson.description
+            lessonList.thumbnail = lesson.thumbnail
+            lessonList.videoUrl = lesson.video_url
+            persistenceManager.save()
+        }
+    }
+    
+    private func getSavedDataFromLocalDatabase() {
+        let persistenceManager = PersistenceManager.shared
+        lessons = persistenceManager.fetch(VideoLessonsList.self)
     }
 }

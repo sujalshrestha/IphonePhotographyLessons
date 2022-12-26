@@ -86,10 +86,10 @@ class LessonDetailUIView: UIView {
         nextButtonChevron.centerYInSuperview()
     }
     
-    func configureView(lesson: Lessons) {
+    func configureView(lesson: VideoLessonsList) {
         thumbnail.kf.setImage(with: URL(string: lesson.thumbnail))
         title.text = lesson.name
-        body.text = lesson.description
+        body.text = lesson.details
     }
     
     private func observeEvents() {

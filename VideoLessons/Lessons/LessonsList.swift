@@ -39,7 +39,7 @@ struct LessonsListView: View {
 
 struct LessonListCell: View {
     
-    let lesson: Lessons
+    let lesson: VideoLessonsList
     
     var body: some View {
         HStack(spacing: 10) {
