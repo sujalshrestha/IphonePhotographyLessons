@@ -10,6 +10,8 @@ import Kingfisher
 
 class LessonDetailUIView: UIView {
     
+    var onPlay: (() -> Void)?
+    
     let thumbnail: UIImageView = {
         let view = UIImageView()
         view.contentMode = .scaleAspectFill
@@ -18,9 +20,9 @@ class LessonDetailUIView: UIView {
         return view
     }()
     
-    let playButton: UIImageView = {
-        let view = UIImageView()
-        view.image = UIImage(systemName: "play.fill")
+    let playButton: UIButton = {
+        let view = UIButton(type: .system)
+        view.setImage(UIImage(systemName: "play.fill")?.withTintColor(.white), for: .normal)
         view.contentMode = .scaleAspectFit
         view.tintColor = .white
         return view
@@ -56,6 +58,7 @@ class LessonDetailUIView: UIView {
     override init(frame: CGRect) {
         super.init(frame: frame)
         setupView()
+        observeEvents()
     }
     
     func setupView() {
@@ -87,6 +90,14 @@ class LessonDetailUIView: UIView {
         thumbnail.kf.setImage(with: URL(string: lesson.thumbnail))
         title.text = lesson.name
         body.text = lesson.description
+    }
+    
+    private func observeEvents() {
+        playButton.addTarget(self, action: #selector(handlePlay), for: .touchUpInside)
+    }
+    
+    @objc func handlePlay() {
+        onPlay?()
     }
     
     required init?(coder: NSCoder) {

@@ -7,6 +7,9 @@
 
 import UIKit
 import SwiftUI
+import Combine
+import AVFoundation
+import AVKit
 
 struct LessonDetailView: UIViewControllerRepresentable {
     typealias UIViewControllerType = LessonDetailVC
@@ -34,6 +37,7 @@ class LessonDetailVC: UIViewController {
     override func viewDidLoad() {
         super.viewDidLoad()
         currentView.configureView(lesson: lesson)
+        observeViewEvents()
     }
     
     override func viewWillAppear(_ animated: Bool) {
@@ -49,6 +53,21 @@ class LessonDetailVC: UIViewController {
     
     @objc func downloadVideo() {
         
+    }
+    
+    private func observeViewEvents() {
+        currentView.onPlay = { [weak self] in
+            self?.openVideoPlayer()
+        }
+    }
+    
+    private func openVideoPlayer() {
+        if let videoUrl = URL(string: lesson.video_url) {
+            let player = AVPlayer(url: videoUrl)
+            let avPlayerVC = AVPlayerViewController()
+            avPlayerVC.player = player
+            present(avPlayerVC, animated: true) { avPlayerVC.player?.play() }
+        }
     }
     
     override func loadView() {
