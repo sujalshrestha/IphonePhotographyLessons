@@ -14,6 +14,7 @@ class LessonDetailUIView: UIView {
         let view = UIImageView()
         view.contentMode = .scaleAspectFill
         view.clipsToBounds = true
+        view.alpha = 0.5
         return view
     }()
     
@@ -62,10 +63,11 @@ class LessonDetailUIView: UIView {
         thumbnail.anchor(top: safeAreaLayoutGuide.topAnchor, leading: leadingAnchor, bottom: nil, trailing: trailingAnchor)
         thumbnail.constraintHeight(constant: 200)
         
-        thumbnail.addSubview(playButton)
+        addSubview(playButton)
         playButton.constraintHeight(constant: 44)
         playButton.constraintWidth(constant: 44)
-        playButton.centerInSuperview()
+        playButton.centerXAnchor.constraint(equalTo: thumbnail.centerXAnchor).isActive = true
+        playButton.centerYAnchor.constraint(equalTo: thumbnail.centerYAnchor).isActive = true
         
         addSubview(title)
         title.anchor(top: thumbnail.bottomAnchor, leading: leadingAnchor, bottom: nil, trailing: trailingAnchor, padding: .init(top: 16, left: 16, bottom: 0, right: 16))
