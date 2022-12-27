@@ -13,7 +13,6 @@ class LessonDetailUIView: UIView {
     var onPlay: (() -> Void)?
     var onNext: (() -> Void)?
     var onPrevious: (() -> Void)?
-    var onCancel: (() -> Void)?
     
     let thumbnail: UIImageView = {
         let view = UIImageView()
@@ -89,12 +88,6 @@ class LessonDetailUIView: UIView {
         return view
     }()
     
-    let cancelDownloadButton: UIButton = {
-        let button = UIButton(type: .system)
-        button.setTitle("Cancel", for: .normal)
-        return button
-    }()
-    
     override init(frame: CGRect) {
         super.init(frame: frame)
         setupView()
@@ -141,16 +134,13 @@ class LessonDetailUIView: UIView {
         
         progressOverlay.addSubview(progressBackView)
         progressBackView.anchor(top: nil, leading: progressOverlay.leadingAnchor, bottom: nil, trailing: progressOverlay.trailingAnchor, padding: .init(top: 0, left: 40, bottom: 0, right: 40))
-        progressBackView.constraintHeight(constant: 80)
+        progressBackView.constraintHeight(constant: 50)
         progressBackView.centerYInSuperview()
         
         progressBackView.addSubview(progressView)
         progressView.anchor(top: nil, leading: progressBackView.leadingAnchor, bottom: nil, trailing: progressBackView.trailingAnchor, padding: .init(top: 0, left: 20, bottom: 0, right: 20))
         progressView.constraintHeight(constant: 10)
-        progressView.centerYAnchor.constraint(equalTo: progressBackView.centerYAnchor, constant: -10).isActive = true
-        
-        progressBackView.addSubview(cancelDownloadButton)
-        cancelDownloadButton.anchor(top: nil, leading: nil, bottom: progressBackView.bottomAnchor, trailing: progressView.trailingAnchor, padding: .init(top: 0, left: 0, bottom: 5, right: 0))
+        progressView.centerYInSuperview()
     }
     
     func configureView(lesson: VideoLessonsList?) {
@@ -164,7 +154,6 @@ class LessonDetailUIView: UIView {
         playButton.addTarget(self, action: #selector(handlePlay), for: .touchUpInside)
         nextLessonButton.addTarget(self, action: #selector(handleNext), for: .touchUpInside)
         previousLessonButton.addTarget(self, action: #selector(handlePrevious), for: .touchUpInside)
-        cancelDownloadButton.addTarget(self, action: #selector(handleCancel), for: .touchUpInside)
     }
     
     @objc func handlePlay() {
@@ -177,10 +166,6 @@ class LessonDetailUIView: UIView {
     
     @objc func handlePrevious() {
         onPrevious?()
-    }
-    
-    @objc func handleCancel() {
-        onCancel?()
     }
     
     required init?(coder: NSCoder) {

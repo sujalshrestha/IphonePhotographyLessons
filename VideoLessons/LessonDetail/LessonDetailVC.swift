@@ -47,13 +47,28 @@ class LessonDetailVC: UIViewController {
         DispatchQueue.main.async { [weak self] in
             guard let self = self else { return }
             self.parent?.navigationItem.largeTitleDisplayMode = .never
-            let rightBarButton = UIBarButtonItem(title: "Download", style: .plain, target: self, action: #selector(self.downloadVideo))
-            self.parent?.navigationItem.rightBarButtonItem = rightBarButton
+            self.checkIfVideoHasBeenDownloaded()
         }
+    }
+    
+    private func checkIfVideoHasBeenDownloaded() {
+        self.downloadManager.checkFileExists(fileName: String(self.lesson.value?.id ?? 0))
+        if !downloadManager.isDownloaded.value {
+            let rightBarButton = UIBarButtonItem(title: "Download", style: .plain, target: self, action: #selector(downloadVideo))
+            parent?.navigationItem.rightBarButtonItem = rightBarButton
+        } else {
+            hideDownloadButton()
+        }
+    }
+    
+    private func hideDownloadButton() {
+        parent?.navigationItem.rightBarButtonItem = nil
+        parent?.navigationItem.rightBarButtonItem?.isHidden = true
     }
     
     private func observeEvents() {
         lesson.sink { [weak self] lesson in
+            self?.checkIfVideoHasBeenDownloaded()
             self?.currentView.configureView(lesson: lesson)
         }.store(in: &cancellables)
     }
@@ -72,12 +87,6 @@ class LessonDetailVC: UIViewController {
             }
         }.store(in: &cancellables)
         
-        downloadManager.isDownloading.sink { isDownloading in
-            if isDownloading {
-                print("Video is downloading...")
-            }
-        }.store(in: &cancellables)
-        
         downloadManager.showLoading.sink { [weak self] showProgress in
             DispatchQueue.main.async {
                 self?.currentView.progressOverlay.isHidden = !showProgress
@@ -87,6 +96,10 @@ class LessonDetailVC: UIViewController {
         downloadManager.downloadProgress.sink { [weak self] progress in
             DispatchQueue.main.async {
                 self?.currentView.progressView.progress = progress
+                if progress == 1.0 {
+                    self?.showVideoDownloadedAlert()
+                    self?.hideDownloadButton()
+                }
             }
         }.store(in: &cancellables)
     }
@@ -102,11 +115,6 @@ class LessonDetailVC: UIViewController {
         
         currentView.onPrevious = { [weak self] in
             self?.gotoPreviousLesson()
-        }
-        
-        currentView.onCancel = { [weak self] in
-            self?.currentView.progressOverlay.isHidden = true
-            self?.downloadManager.stopDownload()
         }
     }
     
@@ -144,6 +152,7 @@ class LessonDetailVC: UIViewController {
                 return
             }
         }
+        checkIfVideoHasBeenDownloaded()
     }
     
     private func gotoPreviousLesson() {
@@ -158,6 +167,12 @@ class LessonDetailVC: UIViewController {
                 return
             }
         }
+    }
+    
+    private func showVideoDownloadedAlert() {
+        let alertController = UIAlertController(title: "Success", message: "Video downloaded successfully.", preferredStyle: .alert)
+        alertController.addAction(UIAlertAction(title: "OK", style: .default))
+        present(alertController, animated: true)
     }
     
     override func loadView() {
