@@ -28,6 +28,7 @@ class LessonDetailVC: UIViewController {
     let currentView = LessonDetailUIView()
     var cancellables = [AnyCancellable]()
     let lesson = CurrentValueSubject<VideoLessonsList?, Never>(nil)
+    let downloadManager = DownloadManager()
     
     init(lesson: VideoLessonsList) {
         self.lesson.send(lesson)
@@ -58,16 +59,16 @@ class LessonDetailVC: UIViewController {
     }
     
     @objc func downloadVideo() {
+        currentView.progressOverlay.isHidden = false
         let videoUrl = lesson.value?.videoUrl ?? ""
         let fileName = String(lesson.value?.id ?? 0)
-        let downloadManager = DownloadManager()
         downloadManager.checkFileExists(fileName: fileName)
         
-        downloadManager.isDownloaded.sink { isDownloaded in
+        downloadManager.isDownloaded.sink { [weak self] isDownloaded in
             if isDownloaded {
                 print("Video has been downloaded")
             } else {
-                downloadManager.downloadFile(fileName: fileName, videoUrl: videoUrl)
+                self?.downloadManager.downloadFile(fileName: fileName, videoUrl: videoUrl)
             }
         }.store(in: &cancellables)
         
@@ -77,6 +78,17 @@ class LessonDetailVC: UIViewController {
             }
         }.store(in: &cancellables)
         
+        downloadManager.showLoading.sink { [weak self] showProgress in
+            DispatchQueue.main.async {
+                self?.currentView.progressOverlay.isHidden = !showProgress
+            }
+        }.store(in: &cancellables)
+        
+        downloadManager.downloadProgress.sink { [weak self] progress in
+            DispatchQueue.main.async {
+                self?.currentView.progressView.progress = progress
+            }
+        }.store(in: &cancellables)
     }
     
     private func observeViewEvents() {
@@ -91,26 +103,33 @@ class LessonDetailVC: UIViewController {
         currentView.onPrevious = { [weak self] in
             self?.gotoPreviousLesson()
         }
+        
+        currentView.onCancel = { [weak self] in
+            self?.currentView.progressOverlay.isHidden = true
+            self?.downloadManager.stopDownload()
+        }
     }
     
     private func openVideoPlayer() {
         let downloadManager = DownloadManager()
         let fileName = String(lesson.value?.id ?? 0)
         downloadManager.checkFileExists(fileName: fileName)
-        let fileAsset = downloadManager.getVideoFileAsset(fileName: fileName)
         
-        let player = AVPlayer(playerItem: fileAsset)
-        let avPlayerVC = AVPlayerViewController()
-        avPlayerVC.player = player
-        present(avPlayerVC, animated: true) { avPlayerVC.player?.play() }
-        
-        
-//        if let videoUrl = URL(string: lesson.value?.videoUrl ?? "") {
-//            let player = AVPlayer(url: videoUrl)
-//            let avPlayerVC = AVPlayerViewController()
-//            avPlayerVC.player = player
-//            present(avPlayerVC, animated: true) { avPlayerVC.player?.play() }
-//        }
+        if downloadManager.isDownloaded.value {
+            let fileAsset = downloadManager.getVideoFileAsset(fileName: fileName)
+            
+            let player = AVPlayer(playerItem: fileAsset)
+            let avPlayerVC = AVPlayerViewController()
+            avPlayerVC.player = player
+            present(avPlayerVC, animated: true) { avPlayerVC.player?.play() }
+        } else {
+            if let videoUrl = URL(string: lesson.value?.videoUrl ?? "") {
+                let player = AVPlayer(url: videoUrl)
+                let avPlayerVC = AVPlayerViewController()
+                avPlayerVC.player = player
+                present(avPlayerVC, animated: true) { avPlayerVC.player?.play() }
+            }
+        }
     }
     
     private func gotoNextLesson() {
