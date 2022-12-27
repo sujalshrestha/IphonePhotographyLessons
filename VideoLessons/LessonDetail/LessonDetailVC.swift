@@ -28,6 +28,7 @@ class LessonDetailVC: UIViewController {
     let currentView = LessonDetailUIView()
     var cancellables = [AnyCancellable]()
     let lesson = CurrentValueSubject<VideoLessonsList?, Never>(nil)
+    let downloadManager = DownloadManager()
     
     init(lesson: VideoLessonsList) {
         self.lesson.send(lesson)
@@ -46,19 +47,61 @@ class LessonDetailVC: UIViewController {
         DispatchQueue.main.async { [weak self] in
             guard let self = self else { return }
             self.parent?.navigationItem.largeTitleDisplayMode = .never
-            let rightBarButton = UIBarButtonItem(title: "Download", style: .plain, target: self, action: #selector(self.downloadVideo))
-            self.parent?.navigationItem.rightBarButtonItem = rightBarButton
+            self.checkIfVideoHasBeenDownloaded()
         }
+    }
+    
+    private func checkIfVideoHasBeenDownloaded() {
+        self.downloadManager.checkFileExists(fileName: String(self.lesson.value?.id ?? 0))
+        if !downloadManager.isDownloaded.value {
+            let rightBarButton = UIBarButtonItem(title: "Download", style: .plain, target: self, action: #selector(downloadVideo))
+            parent?.navigationItem.rightBarButtonItem = rightBarButton
+        } else {
+            hideDownloadButton()
+        }
+    }
+    
+    private func hideDownloadButton() {
+        parent?.navigationItem.rightBarButtonItem = nil
+        parent?.navigationItem.rightBarButtonItem?.isHidden = true
     }
     
     private func observeEvents() {
         lesson.sink { [weak self] lesson in
+            self?.checkIfVideoHasBeenDownloaded()
             self?.currentView.configureView(lesson: lesson)
         }.store(in: &cancellables)
     }
     
     @objc func downloadVideo() {
+        currentView.progressOverlay.isHidden = false
+        let videoUrl = lesson.value?.videoUrl ?? ""
+        let fileName = String(lesson.value?.id ?? 0)
+        downloadManager.checkFileExists(fileName: fileName)
         
+        downloadManager.isDownloaded.sink { [weak self] isDownloaded in
+            if isDownloaded {
+                print("Video has been downloaded")
+            } else {
+                self?.downloadManager.downloadFile(fileName: fileName, videoUrl: videoUrl)
+            }
+        }.store(in: &cancellables)
+        
+        downloadManager.showLoading.sink { [weak self] showProgress in
+            DispatchQueue.main.async {
+                self?.currentView.progressOverlay.isHidden = !showProgress
+            }
+        }.store(in: &cancellables)
+        
+        downloadManager.downloadProgress.sink { [weak self] progress in
+            DispatchQueue.main.async {
+                self?.currentView.progressView.progress = progress
+                if progress == 1.0 {
+                    self?.showVideoDownloadedAlert()
+                    self?.hideDownloadButton()
+                }
+            }
+        }.store(in: &cancellables)
     }
     
     private func observeViewEvents() {
@@ -76,11 +119,24 @@ class LessonDetailVC: UIViewController {
     }
     
     private func openVideoPlayer() {
-        if let videoUrl = URL(string: lesson.value?.videoUrl ?? "") {
-            let player = AVPlayer(url: videoUrl)
+        let downloadManager = DownloadManager()
+        let fileName = String(lesson.value?.id ?? 0)
+        downloadManager.checkFileExists(fileName: fileName)
+        
+        if downloadManager.isDownloaded.value {
+            let fileAsset = downloadManager.getVideoFileAsset(fileName: fileName)
+            
+            let player = AVPlayer(playerItem: fileAsset)
             let avPlayerVC = AVPlayerViewController()
             avPlayerVC.player = player
             present(avPlayerVC, animated: true) { avPlayerVC.player?.play() }
+        } else {
+            if let videoUrl = URL(string: lesson.value?.videoUrl ?? "") {
+                let player = AVPlayer(url: videoUrl)
+                let avPlayerVC = AVPlayerViewController()
+                avPlayerVC.player = player
+                present(avPlayerVC, animated: true) { avPlayerVC.player?.play() }
+            }
         }
     }
     
@@ -96,6 +152,7 @@ class LessonDetailVC: UIViewController {
                 return
             }
         }
+        checkIfVideoHasBeenDownloaded()
     }
     
     private func gotoPreviousLesson() {
@@ -110,6 +167,12 @@ class LessonDetailVC: UIViewController {
                 return
             }
         }
+    }
+    
+    private func showVideoDownloadedAlert() {
+        let alertController = UIAlertController(title: "Success", message: "Video downloaded successfully.", preferredStyle: .alert)
+        alertController.addAction(UIAlertAction(title: "OK", style: .default))
+        present(alertController, animated: true)
     }
     
     override func loadView() {

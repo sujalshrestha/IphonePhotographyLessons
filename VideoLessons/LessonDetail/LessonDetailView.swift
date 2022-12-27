@@ -69,10 +69,31 @@ class LessonDetailUIView: UIView {
         return view
     }()
     
+    let progressOverlay: UIView = {
+        let view = UIView()
+        view.backgroundColor = .clear
+        return view
+    }()
+    
+    let progressBackView: UIView = {
+        let view = UIView()
+        view.backgroundColor = .white
+        view.layer.cornerRadius = 8
+        view.clipsToBounds = true
+        return view
+    }()
+    
+    let progressView: UIProgressView = {
+        let view = UIProgressView()
+        return view
+    }()
+    
     override init(frame: CGRect) {
         super.init(frame: frame)
         setupView()
+        setupProgressView()
         observeEvents()
+        progressOverlay.isHidden = true
     }
     
     func setupView() {
@@ -105,6 +126,21 @@ class LessonDetailUIView: UIView {
         
         previousLessonButton.anchor(top: nil, leading: previousButtonChevron.trailingAnchor, bottom: safeAreaLayoutGuide.bottomAnchor, trailing: nil, padding: .init(top: 0, left: 5, bottom: 20, right: 0))
         previousButtonChevron.centerYInSuperview()
+    }
+    
+    private func setupProgressView() {
+        addSubview(progressOverlay)
+        progressOverlay.fillSuperview()
+        
+        progressOverlay.addSubview(progressBackView)
+        progressBackView.anchor(top: nil, leading: progressOverlay.leadingAnchor, bottom: nil, trailing: progressOverlay.trailingAnchor, padding: .init(top: 0, left: 40, bottom: 0, right: 40))
+        progressBackView.constraintHeight(constant: 50)
+        progressBackView.centerYInSuperview()
+        
+        progressBackView.addSubview(progressView)
+        progressView.anchor(top: nil, leading: progressBackView.leadingAnchor, bottom: nil, trailing: progressBackView.trailingAnchor, padding: .init(top: 0, left: 20, bottom: 0, right: 20))
+        progressView.constraintHeight(constant: 10)
+        progressView.centerYInSuperview()
     }
     
     func configureView(lesson: VideoLessonsList?) {

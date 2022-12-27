@@ -7,6 +7,7 @@
 	objects = {
 
 /* Begin PBXBuildFile section */
+		E0596FF12959C84F005945E9 /* DownloadManager.swift in Sources */ = {isa = PBXBuildFile; fileRef = E0596FF02959C84F005945E9 /* DownloadManager.swift */; };
 		E05C49DC2959A625000EB526 /* VideoLessonsList+CoreDataClass.swift in Sources */ = {isa = PBXBuildFile; fileRef = E05C49DA2959A625000EB526 /* VideoLessonsList+CoreDataClass.swift */; };
 		E05C49DD2959A625000EB526 /* VideoLessonsList+CoreDataProperties.swift in Sources */ = {isa = PBXBuildFile; fileRef = E05C49DB2959A625000EB526 /* VideoLessonsList+CoreDataProperties.swift */; };
 		E0BE2D372959A4AB00D719C9 /* VideoLessonsModel.xcdatamodeld in Sources */ = {isa = PBXBuildFile; fileRef = E0BE2D352959A4AB00D719C9 /* VideoLessonsModel.xcdatamodeld */; };
@@ -47,6 +48,7 @@
 /* End PBXContainerItemProxy section */
 
 /* Begin PBXFileReference section */
+		E0596FF02959C84F005945E9 /* DownloadManager.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = DownloadManager.swift; sourceTree = "<group>"; };
 		E05C49DA2959A625000EB526 /* VideoLessonsList+CoreDataClass.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; name = "VideoLessonsList+CoreDataClass.swift"; path = "VideoLessons/CoreData/VideoLessonsList+CoreDataClass.swift"; sourceTree = SOURCE_ROOT; };
 		E05C49DB2959A625000EB526 /* VideoLessonsList+CoreDataProperties.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; name = "VideoLessonsList+CoreDataProperties.swift"; path = "VideoLessons/CoreData/VideoLessonsList+CoreDataProperties.swift"; sourceTree = SOURCE_ROOT; };
 		E0BE2D362959A4AB00D719C9 /* VideoLessonsModel.xcdatamodel */ = {isa = PBXFileReference; lastKnownFileType = wrapper.xcdatamodel; path = VideoLessonsModel.xcdatamodel; sourceTree = "<group>"; };
@@ -111,6 +113,7 @@
 			isa = PBXGroup;
 			children = (
 				E0DDE8F429596429009C18AE /* UIAnchor+Ext.swift */,
+				E0596FF02959C84F005945E9 /* DownloadManager.swift */,
 			);
 			path = Utils;
 			sourceTree = "<group>";
@@ -347,6 +350,7 @@
 				E0BE2D372959A4AB00D719C9 /* VideoLessonsModel.xcdatamodeld in Sources */,
 				E0E0ED992958068800D15C4D /* NetworkManager.swift in Sources */,
 				E05C49DC2959A625000EB526 /* VideoLessonsList+CoreDataClass.swift in Sources */,
+				E0596FF12959C84F005945E9 /* DownloadManager.swift in Sources */,
 				E0E0ED972958033800D15C4D /* LessonsModel.swift in Sources */,
 				E0E0ED9E29580E3900D15C4D /* LessonsListViewModel.swift in Sources */,
 				E0E0ED6A295801D000D15C4D /* VideoLessonsApp.swift in Sources */,
